@@ -1,11 +1,13 @@
 import { useGameStore } from '@/store/mysteryStore';
 import { useState } from 'react';
-import { FileText, Send } from 'lucide-react';
+import { FileText, Send, CheckCircle, XCircle } from 'lucide-react';
 
 export default function FinalAnswerPanel() {
   const role = useGameStore(state => state.role);
   const gameState = useGameStore(state => state.gameState);
   const submitFinalAnswer = useGameStore(state => state.submitFinalAnswer);
+  const victory = useGameStore(state => state.victory);
+  const error = useGameStore(state => state.error);
   const [answers, setAnswers] = useState({
     murderer: '',
     motive: '',
@@ -14,6 +16,7 @@ export default function FinalAnswerPanel() {
     evidence: '',
   });
   const [showPanel, setShowPanel] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   if (!role || !gameState) return null;
 
@@ -21,27 +24,54 @@ export default function FinalAnswerPanel() {
   const hasEnoughClues = gameState.allCollectedClues.length >= 10;
 
   const handleSubmit = () => {
+    setSubmitting(true);
     submitFinalAnswer(answers);
+    setTimeout(() => setSubmitting(false), 2000);
   };
+
+  if (victory) {
+    return (
+      <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div className="bg-gradient-to-br from-emerald-900 to-teal-900 rounded-xl p-8 max-w-md w-full text-center border border-emerald-500/30">
+          <CheckCircle className="w-16 h-16 text-emerald-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-emerald-100 mb-2">恭喜！案件告破！</h2>
+          <p className="text-emerald-200 mb-4">两位侦探成功合作，揭开了午夜庄园谜案的真相！</p>
+          <div className="bg-emerald-800/50 rounded-lg p-4 text-left text-sm text-emerald-100">
+            <p><strong>凶手：</strong>陈志明</p>
+            <p><strong>动机：</strong>遗产争夺</p>
+            <p><strong>手法：</strong>下毒谋杀</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!showPanel) {
     return (
-      <button
-        onClick={() => setShowPanel(true)}
-        disabled={!allPuzzlesSolved || !hasEnoughClues}
-        className={`w-full p-4 rounded-xl transition-all ${
-          allPuzzlesSolved && hasEnoughClues
-            ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white'
-            : 'bg-slate-800/50 text-slate-500 cursor-not-allowed'
-        }`}
-      >
-        <div className="flex items-center justify-center gap-2">
-          <FileText className="w-5 h-5" />
-          <span className="font-medium">
-            {allPuzzlesSolved && hasEnoughClues ? '提交最终答案' : '需要解开所有谜题后才能提交'}
-          </span>
-        </div>
-      </button>
+      <div className="space-y-2">
+        {error && (
+          <div className="bg-red-900/30 border border-red-500/30 rounded-lg p-3 flex items-center gap-2 text-red-400 text-sm">
+            <XCircle className="w-4 h-4" />
+            {error}
+          </div>
+        )}
+        <button
+          onClick={() => setShowPanel(true)}
+          disabled={!allPuzzlesSolved || !hasEnoughClues}
+          className={`w-full p-4 rounded-xl transition-all ${
+            allPuzzlesSolved && hasEnoughClues
+              ? 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white'
+              : 'bg-slate-800/50 text-slate-500 cursor-not-allowed'
+          }`}
+        >
+          <div className="flex items-center justify-center gap-2">
+            <FileText className="w-5 h-5" />
+            <span className="font-medium">
+              {allPuzzlesSolved && hasEnoughClues ? '提交最终答案' : '需要解开所有谜题后才能提交'}
+            </span>
+          </div>
+        </button>
+      </div>
     );
   }
 
@@ -119,11 +149,11 @@ export default function FinalAnswerPanel() {
           </button>
           <button
             onClick={handleSubmit}
-            disabled={!answers.murderer || !answers.motive || !answers.method}
+            disabled={!answers.murderer || !answers.motive || !answers.method || submitting}
             className="flex-1 py-2 bg-amber-600 hover:bg-amber-500 disabled:bg-slate-700 disabled:text-slate-500 rounded-lg text-white flex items-center justify-center gap-2"
           >
             <Send className="w-4 h-4" />
-            提交答案
+            {submitting ? '提交中...' : '提交答案'}
           </button>
         </div>
       </div>

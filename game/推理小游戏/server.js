@@ -7,7 +7,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/game-data', express.static(path.join(__dirname, 'game-data')));

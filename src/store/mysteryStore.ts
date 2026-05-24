@@ -9,6 +9,7 @@ interface GameStore {
   gameState: GameState | null;
   isConnected: boolean;
   error: string | null;
+  victory: boolean;
 
   connect: () => void;
   createRoom: () => Promise<string | null>;
@@ -36,6 +37,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   gameState: null,
   isConnected: false,
   error: null,
+  victory: false,
 
   connect: () => {
     const socketUrl = getSocketUrl();
@@ -88,7 +90,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     socket.on('game_victory', () => {
       const { gameState } = get();
       if (gameState) {
-        set({ gameState: { ...gameState, gameEnded: true } });
+        set({ gameState: { ...gameState, gameEnded: true }, victory: true });
       }
     });
 
