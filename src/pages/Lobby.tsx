@@ -13,13 +13,22 @@ export default function Lobby() {
   const isConnected = useGameStore(state => state.isConnected);
   const error = useGameStore(state => state.error);
 
+  const gameState = useGameStore(state => state.gameState);
+
   const [inputRoomId, setInputRoomId] = useState('');
   const [copied, setCopied] = useState(false);
   const [mode, setMode] = useState<'menu' | 'create' | 'join'>('menu');
+  const [joining, setJoining] = useState(false);
 
   useEffect(() => {
     connect();
   }, [connect]);
+
+  useEffect(() => {
+    if (gameState && roomId) {
+      navigate('/game');
+    }
+  }, [gameState, roomId, navigate]);
 
   const handleCreateRoom = async () => {
     const id = await createRoom();
@@ -29,10 +38,13 @@ export default function Lobby() {
   };
 
   const handleJoinRoom = async () => {
-    if (inputRoomId) {
+    if (inputRoomId && !joining) {
+      setJoining(true);
       const success = await joinRoom(inputRoomId.toUpperCase());
       if (success) {
         setMode('join');
+      } else {
+        setJoining(false);
       }
     }
   };
@@ -90,6 +102,41 @@ export default function Lobby() {
 
           <div className="mt-6 text-center text-sm text-slate-500">
             将房间号发送给队友，等待加入后游戏自动开始
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (mode === 'join' && roomId && role) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+        <div className="bg-slate-800/50 rounded-2xl p-8 max-w-md w-full border border-slate-700/50">
+          <div className="text-center mb-6">
+            <div className="text-4xl mb-4">🕵️</div>
+            <h1 className="text-2xl font-bold text-slate-100">已加入房间</h1>
+            <p className="text-slate-400 mt-2">等待游戏开始...</p>
+          </div>
+
+          <div className="bg-slate-900/50 rounded-xl p-4 mb-6">
+            <div className="text-sm text-slate-500 mb-2">房间号</div>
+            <span className="text-2xl font-mono font-bold text-emerald-400">{roomId}</span>
+          </div>
+
+          <div className="bg-slate-900/50 rounded-xl p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center text-lg">
+                👨‍💼
+              </div>
+              <div>
+                <div className="text-slate-200 font-medium">陈默 (你)</div>
+                <div className="text-xs text-emerald-400">侦探 B</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 text-center text-sm text-slate-500">
+            等待房主开始游戏...
           </div>
         </div>
       </div>
@@ -154,10 +201,10 @@ export default function Lobby() {
             </div>
             <button
               onClick={handleJoinRoom}
-              disabled={inputRoomId.length !== 6}
+              disabled={inputRoomId.length !== 6 || joining}
               className="w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:bg-slate-700 disabled:text-slate-500 rounded-xl text-white font-medium transition-all"
             >
-              加入游戏
+              {joining ? '加入中...' : '加入游戏'}
             </button>
             <button
               onClick={() => setMode('menu')}

@@ -137,6 +137,13 @@ io.on('connection', (socket) => {
       return;
     }
     
+    const existingPlayer = room.players.find(p => p.id === socket.id);
+    if (existingPlayer) {
+      console.log(`用户 ${socket.id} 已在房间 ${upperRoomId} 中`);
+      callback({ roomId: upperRoomId, role: existingPlayer.role });
+      return;
+    }
+    
     console.log(`房间 ${upperRoomId} 当前玩家数: ${room.players.length}`);
     
     if (room.players.length >= 2) {
