@@ -52,13 +52,13 @@ export default function ClueBag() {
               </div>
               <div className="flex gap-1">
                 <button
-                  onClick={() => setSelectedClue(clue.id)}
+                  onClick={(e) => { e.preventDefault(); setSelectedClue(clue.id); }}
                   className="p-1 hover:bg-slate-700 rounded text-slate-400 hover:text-white"
                 >
                   <Eye className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => shareClue(clue.id)}
+                  onClick={(e) => { e.preventDefault(); shareClue(clue.id); }}
                   className="p-1 hover:bg-slate-700 rounded text-slate-400 hover:text-white"
                   title="分享给队友"
                 >

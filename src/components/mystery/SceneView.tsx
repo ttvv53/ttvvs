@@ -57,7 +57,7 @@ export default function SceneView() {
             {sceneClues.map(clue => (
               <button
                 key={clue.id}
-                onClick={() => collectClue(clue.id)}
+                onClick={(e) => { e.preventDefault(); collectClue(clue.id); }}
                 className="p-3 bg-slate-700/50 hover:bg-slate-600/50 rounded-lg text-left transition-all group"
               >
                 <div className="flex items-center gap-2">
@@ -85,7 +85,7 @@ export default function SceneView() {
             {collectedSceneClues.map(clue => (
               <button
                 key={clue.id}
-                onClick={() => setSelectedClue(clue.id)}
+                onClick={(e) => { e.preventDefault(); setSelectedClue(clue.id); }}
                 className={`p-3 bg-${theme.primary}-900/30 border border-${theme.primary}-500/30 rounded-lg text-left transition-all`}
               >
                 <div className="flex items-center gap-2">
