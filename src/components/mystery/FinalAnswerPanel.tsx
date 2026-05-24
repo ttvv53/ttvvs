@@ -2,6 +2,14 @@ import { useGameStore } from '@/store/mysteryStore';
 import { useState } from 'react';
 import { FileText, Send, CheckCircle, XCircle } from 'lucide-react';
 
+const OPTIONS = {
+  murderer: ['陈志明', '林婉清', '张管家', '李医生', '王律师'],
+  motive: ['遗产争夺', '情感纠纷', '商业竞争', '复仇', '掩盖罪行'],
+  method: ['下毒谋杀', '勒死', '刺杀', '伪造意外', '电击'],
+  time: ['午夜12点', '凌晨1点', '凌晨2点', '深夜11点'],
+  evidence: ['毒药瓶', '带血手套', '密信', '监控录像', '指纹'],
+};
+
 export default function FinalAnswerPanel() {
   const role = useGameStore(state => state.role);
   const gameState = useGameStore(state => state.gameState);
@@ -86,57 +94,72 @@ export default function FinalAnswerPanel() {
         <div className="space-y-4">
           <div>
             <label className="block text-sm text-slate-400 mb-1">凶手是谁？</label>
-            <input
-              type="text"
+            <select
               value={answers.murderer}
               onChange={e => setAnswers({ ...answers, murderer: e.target.value })}
-              placeholder="输入凶手姓名"
-              className="w-full px-3 py-2 bg-slate-900/50 rounded-lg text-slate-200 placeholder-slate-500"
-            />
+              className="w-full px-3 py-2 bg-slate-900/50 rounded-lg text-slate-200"
+            >
+              <option value="">请选择...</option>
+              {OPTIONS.murderer.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
           </div>
 
           <div>
             <label className="block text-sm text-slate-400 mb-1">作案动机？</label>
-            <input
-              type="text"
+            <select
               value={answers.motive}
               onChange={e => setAnswers({ ...answers, motive: e.target.value })}
-              placeholder="输入作案动机"
-              className="w-full px-3 py-2 bg-slate-900/50 rounded-lg text-slate-200 placeholder-slate-500"
-            />
+              className="w-full px-3 py-2 bg-slate-900/50 rounded-lg text-slate-200"
+            >
+              <option value="">请选择...</option>
+              {OPTIONS.motive.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
           </div>
 
           <div>
             <label className="block text-sm text-slate-400 mb-1">作案手法？</label>
-            <input
-              type="text"
+            <select
               value={answers.method}
               onChange={e => setAnswers({ ...answers, method: e.target.value })}
-              placeholder="输入作案手法"
-              className="w-full px-3 py-2 bg-slate-900/50 rounded-lg text-slate-200 placeholder-slate-500"
-            />
+              className="w-full px-3 py-2 bg-slate-900/50 rounded-lg text-slate-200"
+            >
+              <option value="">请选择...</option>
+              {OPTIONS.method.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
           </div>
 
           <div>
             <label className="block text-sm text-slate-400 mb-1">作案时间？</label>
-            <input
-              type="text"
+            <select
               value={answers.time}
               onChange={e => setAnswers({ ...answers, time: e.target.value })}
-              placeholder="输入作案时间"
-              className="w-full px-3 py-2 bg-slate-900/50 rounded-lg text-slate-200 placeholder-slate-500"
-            />
+              className="w-full px-3 py-2 bg-slate-900/50 rounded-lg text-slate-200"
+            >
+              <option value="">请选择...</option>
+              {OPTIONS.time.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
           </div>
 
           <div>
             <label className="block text-sm text-slate-400 mb-1">关键证据？</label>
-            <input
-              type="text"
+            <select
               value={answers.evidence}
               onChange={e => setAnswers({ ...answers, evidence: e.target.value })}
-              placeholder="输入关键证据"
-              className="w-full px-3 py-2 bg-slate-900/50 rounded-lg text-slate-200 placeholder-slate-500"
-            />
+              className="w-full px-3 py-2 bg-slate-900/50 rounded-lg text-slate-200"
+            >
+              <option value="">请选择...</option>
+              {OPTIONS.evidence.map(opt => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
           </div>
         </div>
 
