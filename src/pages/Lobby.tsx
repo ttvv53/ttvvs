@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '@/store/mysteryStore';
-import { Trophy, Users, Copy, Check, BookOpen } from 'lucide-react';
+import { Trophy, Users, Copy, Check, BookOpen, Bug } from 'lucide-react';
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -182,6 +182,13 @@ export default function Lobby() {
             >
               <BookOpen className="w-5 h-5" />
               六级词汇学习
+            </button>
+            <button
+              onClick={() => navigate('/debug')}
+              className="w-full py-3 bg-amber-900/30 hover:bg-amber-900/50 border border-amber-500/30 rounded-xl text-amber-400 font-medium flex items-center justify-center gap-2 transition-all"
+            >
+              <Bug className="w-4 h-4" />
+              单人调试
             </button>
           </div>
         )}
