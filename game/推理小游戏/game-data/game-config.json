@@ -1,0 +1,473 @@
+{
+  "title": "博物馆午夜谜案",
+  "subtitle": "消失的「星辰之泪」",
+  "background": "在一个月黑风高的夜晚，世界著名的「星辰之泪」蓝宝石从国家博物馆神秘消失。这颗价值连城的宝石在展览期间被盗，监控录像被人为删除，现场只留下一些奇怪的痕迹。作为被紧急召集的侦探二人组，你们必须在黎明前找出真相，追回失窃的宝石！",
+  "roles": {
+    "detective": {
+      "name": "侦探",
+      "title": "首席侦探",
+      "avatar": "🔍",
+      "color": "#3498db",
+      "description": "敏锐的观察力，善于发现隐藏的线索和痕迹",
+      "abilities": [
+        {"id": "search", "name": "细致搜索", "description": "可以发现隐藏的物品和痕迹"},
+        {"id": "deduce", "name": "推理分析", "description": "可以分析线索之间的关联"},
+        {"id": "interview", "name": "询问调查", "description": "可以与NPC进行深入对话"}
+      ],
+      "exclusiveClues": ["hidden_footprint", "secret_note", "fingerprint_trace"]
+    },
+    "analyst": {
+      "name": "鉴定专家",
+      "title": "物证鉴定专家",
+      "avatar": "🔬",
+      "color": "#e74c3c",
+      "description": "专业的鉴定技术，善于分析物品和解读密码",
+      "abilities": [
+        {"id": "analyze", "name": "物证分析", "description": "可以分析物品的成分和来源"},
+        {"id": "decode", "name": "密码解读", "description": "可以破解各种密码和暗号"},
+        {"id": "compare", "name": "比对鉴定", "description": "可以比对样本找出关联"}
+      ],
+      "exclusiveClues": ["chemical_trace", "decoded_message", "material_sample"]
+    }
+  },
+  "levels": [
+    {
+      "id": "exhibition_hall",
+      "name": "第一关：展览大厅",
+      "description": "宝石失窃的案发现场，展览柜已被打开，周围散落着各种痕迹...",
+      "background": "exhibition_hall",
+      "timeLimit": 600,
+      "clues": [
+        {
+          "id": "broken_glass",
+          "name": "破碎的展示柜玻璃",
+          "type": "item",
+          "description": "展示柜的防弹玻璃被打碎，切口异常整齐",
+          "location": "展柜前方",
+          "discoverable": "both",
+          "hint": "这切面...不像是普通工具造成的",
+          "relatedClues": ["glass_cutter"],
+          "misleading": false
+        },
+        {
+          "id": "hidden_footprint",
+          "name": "模糊的脚印",
+          "type": "trace",
+          "description": "在角落发现的一组特殊脚印，鞋底纹路独特",
+          "location": "角落阴影处",
+          "discoverable": "detective",
+          "hint": "需要侦探的敏锐观察才能发现",
+          "relatedClues": ["shoe_brand"],
+          "misleading": false
+        },
+        {
+          "id": "chemical_trace",
+          "name": "化学残留物",
+          "type": "sample",
+          "description": "在玻璃边缘采集到的微量化学物质",
+          "location": "展示柜边缘",
+          "discoverable": "analyst",
+          "hint": "需要专业鉴定才能分析出成分",
+          "relatedClues": ["glass_cutter"],
+          "misleading": false
+        },
+        {
+          "id": "dropped_card",
+          "name": "半张名片",
+          "type": "document",
+          "description": "一张被撕碎的名片，上面只有部分文字：「...安保...限公...」",
+          "location": "展柜旁的地毯下",
+          "discoverable": "both",
+          "hint": "这张名片似乎被故意撕碎",
+          "relatedClues": ["security_company"],
+          "misleading": false
+        },
+        {
+          "id": "fake_alarm_log",
+          "name": "报警系统日志",
+          "type": "document",
+          "description": "报警系统显示当晚20:00-次日6:00处于维护状态",
+          "location": "控制面板",
+          "discoverable": "both",
+          "hint": "维护时间...正好是展览时间",
+          "relatedClues": ["maintenance_schedule"],
+          "misleading": true,
+          "misleadInfo": "这看起来像是内部人员作案的证据，但实际是误导线索"
+        },
+        {
+          "id": "secret_note",
+          "name": "加密纸条",
+          "type": "document",
+          "description": "在通风管道发现的纸条，上面写着一串数字：7-15-12-4",
+          "location": "通风管道内部",
+          "discoverable": "detective",
+          "hint": "这串数字似乎暗藏玄机",
+          "relatedClues": ["decoded_message"],
+          "misleading": false
+        },
+        {
+          "id": "vent_grille",
+          "name": "通风口格栅",
+          "type": "environment",
+          "description": "通风口的螺丝有松动的痕迹，似乎被打开过",
+          "location": "天花板通风口",
+          "discoverable": "both",
+          "hint": "这里可能是进出的通道",
+          "relatedClues": ["escape_route"],
+          "misleading": false
+        }
+      ],
+      "puzzles": [
+        {
+          "id": "glass_analysis",
+          "name": "玻璃切割分析",
+          "type": "collaborative",
+          "description": "分析玻璃的切割方式",
+          "requiredClues": ["broken_glass", "chemical_trace"],
+          "solution": "使用专业玻璃切割工具",
+          "reward": "解锁新线索：玻璃切割工具来源",
+          "rewardClue": "glass_cutter"
+        },
+        {
+          "id": "card_reconstruct",
+          "name": "名片复原",
+          "type": "collaborative",
+          "description": "需要找到另一半名片才能完整复原",
+          "requiredClues": ["dropped_card"],
+          "solution": "下一关可找到另一半",
+          "hint": "名片将在下一关完整拼合"
+        }
+      ],
+      "coopInteractions": [
+        {
+          "id": "examine_glass_together",
+          "name": "共同检查展示柜",
+          "description": "两人同时检查展示柜，发现更多细节",
+          "requiredPlayers": 2,
+          "reward": "发现隐藏的玻璃切割工具品牌印记"
+        }
+      ]
+    },
+    {
+      "id": "monitoring_room",
+      "name": "第二关：监控室",
+      "description": "监控录像被删除，但也许还能找到一些蛛丝马迹...",
+      "background": "monitoring_room",
+      "timeLimit": 540,
+      "clues": [
+        {
+          "id": "deleted_footage",
+          "name": "被删除的录像",
+          "type": "digital",
+          "description": "监控硬盘数据被清空，但删除时间显示为凌晨3:47",
+          "location": "监控主机",
+          "discoverable": "both",
+          "hint": "删除时间比报案时间早了两个小时...",
+          "relatedClues": ["insider_tip"],
+          "misleading": false
+        },
+        {
+          "id": "backup_drive",
+          "name": "备用存储设备",
+          "type": "item",
+          "description": "角落的备用硬盘，似乎被遗忘很久了",
+          "location": "柜子底层",
+          "discoverable": "detective",
+          "hint": "这个备用设备可能还有数据",
+          "relatedClues": ["recovered_footage"],
+          "misleading": false
+        },
+        {
+          "id": "access_log",
+          "name": "门禁记录",
+          "type": "digital",
+          "description": "当晚进入监控室的人员记录",
+          "location": "门禁系统",
+          "discoverable": "both",
+          "hint": "记录显示只有安保人员有权限",
+          "relatedClues": ["security_schedule"],
+          "misleading": false
+        },
+        {
+          "id": "coffee_cup",
+          "name": "未喝完的咖啡杯",
+          "type": "item",
+          "description": "桌上有一杯未喝完的咖啡，还有余温",
+          "location": "工作台",
+          "discoverable": "detective",
+          "hint": "有人最近还在这里...",
+          "relatedClues": ["recent_visitor"],
+          "misleading": true,
+          "misleadInfo": "这是清洁工留下的，与案件无关"
+        },
+        {
+          "id": "encoded_password",
+          "name": "加密的密码本",
+          "type": "document",
+          "description": "一本写满密码的笔记本，最后一页写着：「GOLD = 7-15-12-4」",
+          "location": "抽屉深处",
+          "discoverable": "analyst",
+          "hint": "GOLD...7-15-12-4...这是字母对应数字！",
+          "relatedClues": ["decoded_message"],
+          "misleading": false
+        },
+        {
+          "id": "half_card",
+          "name": "另外半张名片",
+          "type": "document",
+          "description": "「金盾安...司」，与之前的名片可以拼合",
+          "location": "键盘缝隙",
+          "discoverable": "both",
+          "hint": "「金盾安保有限公司」！",
+          "relatedClues": ["security_company"],
+          "misleading": false
+        },
+        {
+          "id": "maintenance_schedule",
+          "name": "维护时间表",
+          "type": "document",
+          "description": "安保公司的维护排班表，当晚值班的是...",
+          "location": "墙上公告板",
+          "discoverable": "both",
+          "hint": "值班人员名单被涂黑了",
+          "relatedClues": ["suspect_identity"],
+          "misleading": false
+        },
+        {
+          "id": "material_sample",
+          "name": "纤维样本",
+          "type": "sample",
+          "description": "在座椅上采集到的特殊纤维",
+          "location": "操作员座椅",
+          "discoverable": "analyst",
+          "hint": "这是高级制服的纤维",
+          "relatedClues": ["uniform_type"],
+          "misleading": false
+        }
+      ],
+      "puzzles": [
+        {
+          "id": "decode_gold",
+          "name": "密码解读",
+          "type": "collaborative",
+          "description": "解读7-15-12-4的含义",
+          "requiredClues": ["secret_note", "encoded_password"],
+          "solution": "GOLD - 黄金展柜",
+          "reward": "得知目标展柜代号",
+          "rewardClue": "target_cabinet"
+        },
+        {
+          "id": "card_complete",
+          "name": "名片拼合",
+          "type": "collaborative",
+          "description": "将两张名片碎片拼合",
+          "requiredClues": ["dropped_card", "half_card"],
+          "solution": "金盾安保有限公司",
+          "reward": "锁定安保公司",
+          "rewardClue": "security_company"
+        }
+      ],
+      "coopInteractions": [
+        {
+          "id": "recover_footage",
+          "name": "恢复监控数据",
+          "description": "侦探找到备用设备，专家恢复数据",
+          "requiredPlayers": 2,
+          "requiredRoles": ["detective", "analyst"],
+          "reward": "恢复部分监控画面，看到可疑人影"
+        }
+      ]
+    },
+    {
+      "id": "director_office",
+      "name": "第三关：馆长办公室",
+      "description": "最后的谜团即将揭晓，真相就藏在这间办公室里...",
+      "background": "director_office",
+      "timeLimit": 480,
+      "clues": [
+        {
+          "id": "safe",
+          "name": "保险柜",
+          "type": "environment",
+          "description": "馆长的私人保险柜，需要四位密码",
+          "location": "书柜后方",
+          "discoverable": "detective",
+          "hint": "密码可能与案件有关",
+          "relatedClues": ["safe_contents"],
+          "misleading": false
+        },
+        {
+          "id": "diary",
+          "name": "馆长日记",
+          "type": "document",
+          "description": "最近几天的日记，提到「那个计划即将实施」",
+          "location": "办公桌抽屉",
+          "discoverable": "both",
+          "hint": "馆长似乎知道些什么...",
+          "relatedClues": ["insider_knowledge"],
+          "misleading": false
+        },
+        {
+          "id": "phone_record",
+          "name": "通话记录",
+          "type": "digital",
+          "description": "馆长昨晚的通话记录，有一个陌生号码",
+          "location": "办公桌上的手机",
+          "discoverable": "analyst",
+          "hint": "通话时长47分钟，深夜2点...",
+          "relatedClues": ["mysterious_caller"],
+          "misleading": false
+        },
+        {
+          "id": "gem_certificate",
+          "name": "宝石鉴定证书",
+          "type": "document",
+          "description": "「星辰之泪」的鉴定证书，但照片上的宝石颜色似乎有些不同",
+          "location": "证书文件夹",
+          "discoverable": "analyst",
+          "hint": "证书上的宝石...颜色偏浅",
+          "relatedClues": ["fake_gem"],
+          "misleading": false
+        },
+        {
+          "id": "hidden_photo",
+          "name": "隐藏照片",
+          "type": "item",
+          "description": "相框背后的照片，显示馆长与一个神秘人的合影",
+          "location": "墙上相框背后",
+          "discoverable": "detective",
+          "hint": "这个神秘人...是金盾安保的高管！",
+          "relatedClues": ["conspiracy"],
+          "misleading": false
+        },
+        {
+          "id": "secret_account",
+          "name": "秘密账户",
+          "type": "digital",
+          "description": "电脑中隐藏的海外账户信息",
+          "location": "电脑加密文件夹",
+          "discoverable": "analyst",
+          "hint": "账户余额...三千万！",
+          "relatedClues": ["motive"],
+          "misleading": false
+        },
+        {
+          "id": "fingerprint_trace",
+          "name": "保险柜指纹",
+          "type": "trace",
+          "description": "保险柜上提取的指纹，除了馆长还有另一个人的",
+          "location": "保险柜表面",
+          "discoverable": "detective",
+          "hint": "这个指纹属于...",
+          "relatedClues": ["second_person"],
+          "misleading": false
+        },
+        {
+          "id": "escape_map",
+          "name": "逃生路线图",
+          "type": "document",
+          "description": "博物馆的详细平面图，标注了一条秘密通道",
+          "location": "书架上的书中夹着",
+          "discoverable": "both",
+          "hint": "这条通道通往博物馆外的废弃地铁站",
+          "relatedClues": ["escape_route"],
+          "misleading": false
+        }
+      ],
+      "puzzles": [
+        {
+          "id": "safe_unlock",
+          "name": "保险柜密码",
+          "type": "collaborative",
+          "description": "四位密码：G=7, O=15, L=12, D=4 → 7154",
+          "requiredClues": ["safe", "decoded_message"],
+          "solution": "7154",
+          "reward": "打开保险柜，发现真正的「星辰之泪」",
+          "rewardClue": "real_gem"
+        },
+        {
+          "id": "final_deduction",
+          "name": "最终推理",
+          "type": "collaborative",
+          "description": "综合所有线索，找出真凶",
+          "requiredClues": ["security_company", "conspiracy", "motive", "real_gem"],
+          "solution": "馆长与安保公司高管合谋，用假宝石替换真宝石",
+          "reward": "案件告破！"
+        }
+      ],
+      "coopInteractions": [
+        {
+          "id": "open_safe_together",
+          "name": "共同开启保险柜",
+          "description": "侦探发现保险柜，专家输入密码",
+          "requiredPlayers": 2,
+          "requiredRoles": ["detective", "analyst"],
+          "reward": "发现真相：展出的宝石是赝品，真宝石藏在保险柜中"
+        }
+      ]
+    }
+  ],
+  "endings": [
+    {
+      "id": "perfect",
+      "name": "完美结局",
+      "condition": "合作度>=90% 且 推理正确率>=95%",
+      "description": "你们成功找出了所有真相，追回了真正的「星辰之泪」，并揭露了馆长与安保公司的阴谋。博物馆恢复了平静，你们被誉为最佳侦探搭档！",
+      "score": "S"
+    },
+    {
+      "id": "good",
+      "name": "良好结局",
+      "condition": "合作度>=70% 且 推理正确率>=80%",
+      "description": "你们找到了大部分真相，成功追回了宝石。虽然遗漏了一些细节，但案件圆满解决。",
+      "score": "A"
+    },
+    {
+      "id": "normal",
+      "name": "普通结局",
+      "condition": "合作度>=50% 且 推理正确率>=60%",
+      "description": "你们破解了案件，但错过了关键证据。宝石虽然找回，但幕后黑手逃脱了。",
+      "score": "B"
+    },
+    {
+      "id": "bad",
+      "name": "遗憾结局",
+      "condition": "其他情况",
+      "description": "由于配合不够默契，关键线索被遗漏。案件虽然告破，但真相永远缺失了一角...",
+      "score": "C"
+    }
+  ],
+  "achievements": [
+    {"id": "first_clue", "name": "初露端倪", "description": "发现第一条线索", "icon": "🔍", "type": "exploration"},
+    {"id": "perfect_coop", "name": "心有灵犀", "description": "完成10次协作互动", "icon": "🤝", "type": "cooperation"},
+    {"id": "detective_master", "name": "侦探大师", "description": "发现所有侦探专属线索", "icon": "🕵️", "type": "role"},
+    {"id": "analyst_master", "name": "鉴定专家", "description": "发现所有专家专属线索", "icon": "🔬", "type": "role"},
+    {"id": "puzzle_solver", "name": "解谜高手", "description": "解开所有谜题", "icon": "🧩", "type": "puzzle"},
+    {"id": "no_mislead", "name": "火眼金睛", "description": "没有受到任何误导线索影响", "icon": "👁️", "type": "deduction"},
+    {"id": "speed_demon", "name": "神速破案", "description": "在规定时间一半内完成游戏", "icon": "⚡", "type": "time"},
+    {"id": "full_story", "name": "真相大白", "description": "发现所有线索", "icon": "📖", "type": "exploration"}
+  ],
+  "dynamicEvents": [
+    {
+      "id": "power_outage",
+      "trigger": "level_2_start",
+      "name": "突然停电",
+      "description": "监控室突然陷入黑暗，应急灯亮起。你们听到走廊传来脚步声...",
+      "effect": "增加紧张氛围，解锁新对话选项"
+    },
+    {
+      "id": "mysterious_call",
+      "trigger": "clue_found:phone_record",
+      "name": "神秘来电",
+      "description": "馆长手机突然响起，来电显示：「未知号码」。接还是不接？",
+      "effect": "选择接听可获得额外线索"
+    },
+    {
+      "id": "security_patrol",
+      "trigger": "time_remaining:120",
+      "name": "保安巡逻",
+      "description": "听到保安的脚步声逼近，需要快速躲藏！",
+      "effect": "限时躲避小游戏"
+    }
+  ]
+}

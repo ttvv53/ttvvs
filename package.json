@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "check": "tsc --noEmit",
     "server:dev": "nodemon",
-    "server:start": "NODE_ENV=production tsx api/gameServer.ts",
+    "server:start": "cross-env NODE_ENV=production tsx api/gameServer.ts",
     "dev": "concurrently \"npm run client:dev\" \"npm run server:dev\"",
     "start": "npm run build && npm run server:start"
   },
@@ -26,7 +26,9 @@
     "socket.io-client": "^4.8.1",
     "tailwind-merge": "^3.0.2",
     "zustand": "^5.0.3",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "tsx": "^4.20.3",
+    "cross-env": "^7.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
@@ -47,7 +49,6 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
     "nodemon": "^3.1.10",
-    "tsx": "^4.20.3",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5",

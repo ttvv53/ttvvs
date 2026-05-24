@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博物馆午夜谜案 - 双人联机推理游戏</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <div id="loading-screen" class="screen active">
+            <div class="loading-content">
+                <div class="loading-icon">🔍</div>
+                <h1>博物馆午夜谜案</h1>
+                <p class="subtitle">消失的「星辰之泪」</p>
+                <div class="loading-bar">
+                    <div class="loading-progress"></div>
+                </div>
+                <p class="loading-text">正在加载游戏资源...</p>
+            </div>
+        </div>
+
+        <div id="menu-screen" class="screen">
+            <div class="menu-container">
+                <header class="game-header">
+                    <h1>🏛️ 博物馆午夜谜案</h1>
+                    <p class="tagline">消失的「星辰之泪」</p>
+                </header>
+                
+                <div class="story-intro">
+                    <div class="intro-text">
+                        <p>在一个月黑风高的夜晚，世界著名的「星辰之泪」蓝宝石从国家博物馆神秘消失。</p>
+                        <p>这颗价值连城的宝石在展览期间被盗，监控录像被人为删除，现场只留下一些奇怪的痕迹。</p>
+                        <p>作为被紧急召集的侦探二人组，你们必须在黎明前找出真相，追回失窃的宝石！</p>
+                    </div>
+                </div>
+
+                <div class="menu-actions">
+                    <button id="btn-create" class="btn btn-primary">
+                        <span class="btn-icon">🏠</span>
+                        <span class="btn-text">创建房间</span>
+                    </button>
+                    <button id="btn-join" class="btn btn-secondary">
+                        <span class="btn-icon">🚪</span>
+                        <span class="btn-text">加入房间</span>
+                    </button>
+                    <button id="btn-how-to-play" class="btn btn-outline">
+                        <span class="btn-icon">📖</span>
+                        <span class="btn-text">游戏说明</span>
+                    </button>
+                </div>
+
+                <div id="join-modal" class="modal hidden">
+                    <div class="modal-content">
+                        <h2>加入房间</h2>
+                        <div class="input-group">
+                            <label for="room-code">房间代码</label>
+                            <input type="text" id="room-code" placeholder="输入6位房间代码" maxlength="6">
+                        </div>
+                        <div class="modal-actions">
+                            <button id="btn-join-confirm" class="btn btn-primary">确认加入</button>
+                            <button id="btn-join-cancel" class="btn btn-outline">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="role-select-screen" class="screen">
+            <div class="role-container">
+                <h2>选择你的角色</h2>
+                <p class="role-hint">两位玩家需要选择不同的角色</p>
+                
+                <div class="role-cards">
+                    <div class="role-card" data-role="detective">
+                        <div class="role-avatar">🔍</div>
+                        <h3>侦探</h3>
+                        <p class="role-title">首席侦探</p>
+                        <p class="role-desc">敏锐的观察力，善于发现隐藏的线索和痕迹</p>
+                        <div class="role-abilities">
+                            <div class="ability">
+                                <span class="ability-icon">🔎</span>
+                                <span class="ability-name">细致搜索</span>
+                            </div>
+                            <div class="ability">
+                                <span class="ability-icon">🧠</span>
+                                <span class="ability-name">推理分析</span>
+                            </div>
+                            <div class="ability">
+                                <span class="ability-icon">💬</span>
+                                <span class="ability-name">询问调查</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-role-select" data-role="detective">选择侦探</button>
+                    </div>
+                    
+                    <div class="role-card" data-role="analyst">
+                        <div class="role-avatar">🔬</div>
+                        <h3>鉴定专家</h3>
+                        <p class="role-title">物证鉴定专家</p>
+                        <p class="role-desc">专业的鉴定技术，善于分析物品和解读密码</p>
+                        <div class="role-abilities">
+                            <div class="ability">
+                                <span class="ability-icon">⚗️</span>
+                                <span class="ability-name">物证分析</span>
+                            </div>
+                            <div class="ability">
+                                <span class="ability-icon">🔐</span>
+                                <span class="ability-name">密码解读</span>
+                            </div>
+                            <div class="ability">
+                                <span class="ability-icon">🔬</span>
+                                <span class="ability-name">比对鉴定</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-role-select" data-role="analyst">选择鉴定专家</button>
+                    </div>
+                </div>
+                
+                <div class="player-name-input">
+                    <label for="player-name">你的名字</label>
+                    <input type="text" id="player-name" placeholder="输入你的名字" maxlength="10">
+                </div>
+            </div>
+        </div>
+
+        <div id="lobby-screen" class="screen">
+            <div class="lobby-container">
+                <div class="room-info">
+                    <h2>游戏房间</h2>
+                    <div class="room-code-display">
+                        <span class="label">房间代码</span>
+                        <span id="display-room-code" class="code">------</span>
+                        <button id="btn-copy-code" class="btn btn-small">复制</button>
+                    </div>
+                </div>
+                
+                <div class="players-list">
+                    <h3>玩家列表</h3>
+                    <div id="players-container" class="players-grid">
+                        <div class="player-slot empty">
+                            <div class="slot-icon">?</div>
+                            <p>等待玩家加入...</p>
+                        </div>
+                        <div class="player-slot empty">
+                            <div class="slot-icon">?</div>
+                            <p>等待玩家加入...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lobby-actions">
+                    <button id="btn-ready" class="btn btn-primary btn-large" disabled>等待另一位玩家...</button>
+                    <button id="btn-leave-lobby" class="btn btn-outline">离开房间</button>
+                </div>
+                
+                <div class="waiting-animation">
+                    <div class="pulse-ring"></div>
+                    <p>等待玩家加入...</p>
+                    <p class="hint">将房间代码分享给你的搭档</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div class="game-container">
+                <div class="game-header-bar">
+                    <div class="header-left">
+                        <div class="level-indicator">
+                            <span id="current-level-name">第一关：展览大厅</span>
+                        </div>
+                    </div>
+                    <div class="header-center">
+                        <div class="timer">
+                            <span class="timer-icon">⏱️</span>
+                            <span id="game-timer">10:00</span>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <div class="score-display">
+                            <div class="score-item">
+                                <span class="score-label">合作度</span>
+                                <div class="score-bar">
+                                    <div id="coop-score-bar" class="score-fill" style="width: 100%"></div>
+                                </div>
+                                <span id="coop-score-value" class="score-value">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-main">
+                    <div class="scene-area">
+                        <div id="scene-container" class="scene-container">
+                            <div class="scene-background" id="scene-bg"></div>
+                            <div class="scene-overlay" id="scene-overlay"></div>
+                            <div class="interactive-objects" id="interactive-objects"></div>
+                        </div>
+                        
+                        <div class="scene-description">
+                            <p id="scene-desc">展览大厅 - 宝石失窃的案发现场，展览柜已被打开，周围散落着各种痕迹...</p>
+                        </div>
+                    </div>
+
+                    <div class="sidebar">
+                        <div class="sidebar-section">
+                            <h3 class="section-title">
+                                <span class="title-icon">📋</span>
+                                已发现线索
+                            </h3>
+                            <div id="clues-list" class="clues-list">
+                                <p class="empty-hint">尚未发现任何线索</p>
+                            </div>
+                        </div>
+                        
+                        <div class="sidebar-section">
+                            <h3 class="section-title">
+                                <span class="title-icon">🧩</span>
+                                谜题进度
+                            </h3>
+                            <div id="puzzles-list" class="puzzles-list">
+                                <p class="empty-hint">暂无谜题</p>
+                            </div>
+                        </div>
+                        
+                        <div class="sidebar-section">
+                            <h3 class="section-title">
+                                <span class="title-icon">🏆</span>
+                                成就
+                            </h3>
+                            <div id="achievements-list" class="achievements-list">
+                                <p class="empty-hint">暂无成就</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="game-footer">
+                    <div class="partner-info">
+                        <div class="partner-avatar" id="partner-avatar">🔍</div>
+                        <div class="partner-details">
+                            <span id="partner-name">搭档</span>
+                            <span id="partner-role">侦探</span>
+                        </div>
+                        <div class="partner-status" id="partner-status">
+                            <span class="status-dot online"></span>
+                            <span>在线</span>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="btn-inventory" class="btn btn-action">
+                            <span class="btn-icon">🎒</span>
+                            <span class="btn-text">背包</span>
+                        </button>
+                        <button id="btn-coop" class="btn btn-action btn-highlight">
+                            <span class="btn-icon">🤝</span>
+                            <span class="btn-text">协作</span>
+                        </button>
+                        <button id="btn-notebook" class="btn btn-action">
+                            <span class="btn-icon">📓</span>
+                            <span class="btn-text">笔记</span>
+                        </button>
+                    </div>
+                    
+                    <button id="btn-toggle-chat" class="btn btn-chat">
+                        <span class="btn-icon">💬</span>
+                        <span id="chat-badge" class="badge hidden">0</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="chat-panel" class="chat-panel hidden">
+                <div class="chat-header">
+                    <h3>聊天</h3>
+                    <button id="btn-close-chat" class="btn-close">×</button>
+                </div>
+                <div id="chat-messages" class="chat-messages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="输入消息..." maxlength="200">
+                    <button id="btn-send-chat" class="btn btn-send">发送</button>
+                </div>
+            </div>
+            
+            <div id="clue-detail-modal" class="modal hidden">
+                <div class="modal-content clue-detail">
+                    <button class="btn-close" id="btn-close-clue">×</button>
+                    <div class="clue-header">
+                        <span id="clue-icon" class="clue-icon">📄</span>
+                        <h2 id="clue-title">线索名称</h2>
+                    </div>
+                    <div class="clue-body">
+                        <p id="clue-description" class="clue-description">线索描述</p>
+                        <div class="clue-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">发现位置</span>
+                                <span id="clue-location" class="meta-value">-</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">发现者</span>
+                                <span id="clue-discoverer" class="meta-value">-</span>
+                            </div>
+                        </div>
+                        <div id="clue-related" class="clue-related hidden">
+                            <h4>关联线索</h4>
+                            <div id="related-clues-list"></div>
+                        </div>
+                    </div>
+                    <div class="clue-actions">
+                        <button id="btn-share-clue" class="btn btn-primary">分享给搭档</button>
+                        <button id="btn-analyze-clue" class="btn btn-secondary">分析线索</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="puzzle-modal" class="modal hidden">
+                <div class="modal-content puzzle-content">
+                    <button class="btn-close" id="btn-close-puzzle">×</button>
+                    <h2 id="puzzle-title">谜题</h2>
+                    <p id="puzzle-description" class="puzzle-description">谜题描述</p>
+                    <div id="puzzle-input-area" class="puzzle-input-area">
+                        <input type="text" id="puzzle-input" placeholder="输入答案...">
+                        <button id="btn-submit-puzzle" class="btn btn-primary">提交答案</button>
+                    </div>
+                    <div id="puzzle-coop-hint" class="puzzle-coop-hint hidden">
+                        <p>此谜题需要双人协作完成</p>
+                        <button id="btn-request-coop-puzzle" class="btn btn-highlight">请求搭档协助</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="coop-panel" class="modal hidden">
+                <div class="modal-content coop-content">
+                    <button class="btn-close" id="btn-close-coop-panel">×</button>
+                    <h2>🤝 协作互动</h2>
+                    <p class="coop-desc">选择一个协作行动，与搭档共同完成</p>
+                    <div id="coop-options" class="coop-options"></div>
+                </div>
+            </div>
+            
+            <div id="coop-request-modal" class="modal hidden">
+                <div class="modal-content">
+                    <h2>协作请求</h2>
+                    <p id="coop-request-text">你的搭档请求协助完成...</p>
+                    <div class="modal-actions">
+                        <button id="btn-accept-coop" class="btn btn-primary">接受</button>
+                        <button id="btn-decline-coop" class="btn btn-outline">拒绝</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="inventory-modal" class="modal hidden">
+                <div class="modal-content inventory-content">
+                    <button class="btn-close" id="btn-close-inventory">×</button>
+                    <h2>🎒 背包</h2>
+                    <div id="inventory-items" class="inventory-grid"></div>
+                </div>
+            </div>
+            
+            <div id="notebook-modal" class="modal hidden">
+                <div class="modal-content notebook-content">
+                    <button class="btn-close" id="btn-close-notebook">×</button>
+                    <h2>📓 推理笔记</h2>
+                    <textarea id="notebook-text" placeholder="在这里记录你的推理思路..."></textarea>
+                    <button id="btn-save-note" class="btn btn-primary">保存笔记</button>
+                </div>
+            </div>
+            
+            <div id="event-modal" class="modal hidden">
+                <div class="modal-content event-content">
+                    <div id="event-icon" class="event-icon">⚡</div>
+                    <h2 id="event-title">突发事件</h2>
+                    <p id="event-description">事件描述</p>
+                    <div id="event-choices" class="event-choices"></div>
+                </div>
+            </div>
+            
+            <div id="achievement-popup" class="achievement-popup hidden">
+                <div class="achievement-content">
+                    <span class="achievement-icon" id="achievement-icon">🏆</span>
+                    <div class="achievement-text">
+                        <span class="achievement-label">成就解锁</span>
+                        <span class="achievement-name" id="achievement-name">成就名称</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ending-screen" class="screen">
+            <div class="ending-container">
+                <div class="ending-header">
+                    <div id="ending-badge" class="ending-badge">S</div>
+                    <h1 id="ending-title">完美结局</h1>
+                </div>
+                
+                <div class="ending-story">
+                    <p id="ending-description">结局描述...</p>
+                </div>
+                
+                <div class="ending-stats">
+                    <h2>案件总结</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value" id="stat-clues">0</span>
+                            <span class="stat-label">发现线索</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="stat-puzzles">0</span>
+                            <span class="stat-label">解开谜题</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="stat-coop">0%</span>
+                            <span class="stat-label">合作度</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="stat-time">00:00</span>
+                            <span class="stat-label">用时</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ending-achievements">
+                    <h2>获得成就</h2>
+                    <div id="ending-achievements-list" class="ending-achievements-grid"></div>
+                </div>
+                
+                <div class="ending-review">
+                    <h2>案件复盘</h2>
+                    <div id="case-review" class="case-review"></div>
+                </div>
+                
+                <div class="ending-actions">
+                    <button id="btn-play-again" class="btn btn-primary">再来一局</button>
+                    <button id="btn-share-result" class="btn btn-secondary">分享结果</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="how-to-play-modal" class="modal hidden">
+            <div class="modal-content how-to-play">
+                <button class="btn-close" id="btn-close-help">×</button>
+                <h2>📖 游戏说明</h2>
+                
+                <div class="help-section">
+                    <h3>游戏目标</h3>
+                    <p>与搭档协作，在限定时间内找出博物馆盗窃案的真凶，追回失窃的「星辰之泪」蓝宝石。</p>
+                </div>
+                
+                <div class="help-section">
+                    <h3>角色分工</h3>
+                    <div class="role-help">
+                        <div class="role-help-item">
+                            <span class="role-icon">🔍</span>
+                            <strong>侦探</strong>：善于发现隐藏线索，可以进行细致搜索和推理分析
+                        </div>
+                        <div class="role-help-item">
+                            <span class="role-icon">🔬</span>
+                            <strong>鉴定专家</strong>：善于分析物品和解读密码，可以进行物证鉴定
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="help-section">
+                    <h3>协作机制</h3>
+                    <ul>
+                        <li>某些线索只有特定角色才能发现</li>
+                        <li>部分谜题需要两人协作才能解开</li>
+                        <li>可以通过聊天系统与搭档沟通</li>
+                        <li>协作行动会增加合作度评分</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h3>评分系统</h3>
+                    <ul>
+                        <li><strong>合作度</strong>：根据协作互动次数计算</li>
+                        <li><strong>推理准确度</strong>：根据发现的线索和解开的谜题计算</li>
+                        <li>最终评分决定结局类型</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h3>操作提示</h3>
+                    <ul>
+                        <li>点击场景中的物品可以调查</li>
+                        <li>发现线索后可以分享给搭档</li>
+                        <li>注意区分误导性线索</li>
+                        <li>合理分工，高效协作</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+    
+    <script src="js/game-config.js"></script>
+    <script src="js/websocket-handler.js"></script>
+    <script src="js/game-logic.js"></script>
+    <script src="js/ui-controller.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
